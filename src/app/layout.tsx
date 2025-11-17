@@ -1,4 +1,3 @@
-// app/layout.tsx
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -6,7 +5,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "CinemaVerse - Discover Amazing Movies",
+  title: "What to watch today - Discover Amazing Movies",
   description:
     "Your ultimate movie discovery platform with intelligent filtering and random selection",
 };

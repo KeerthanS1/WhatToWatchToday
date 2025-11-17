@@ -1,17 +1,14 @@
-// components/MovieCard.tsx
 "use client";
 import { motion } from "framer-motion";
 import { Movie } from "@/types/movie";
-import { useState } from "react";
 
 interface MovieCardProps {
   movie: Movie;
   index: number;
+  onClick: () => void;
 }
 
-export default function MovieCard({ movie, index }: MovieCardProps) {
-  const [isHovered, setIsHovered] = useState(false);
-
+export default function MovieCard({ movie, index, onClick }: MovieCardProps) {
   const imageUrl = movie.poster_path
     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
     : "/placeholder-movie.jpg";
@@ -26,66 +23,54 @@ export default function MovieCard({ movie, index }: MovieCardProps) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
+      transition={{ duration: 0.5, delay: index * 0.05 }} // Faster animation
+      whileHover={{ scale: 1.05 }}
       className="relative group cursor-pointer"
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
+      onClick={onClick}
     >
-      <motion.div
-        animate={{ scale: isHovered ? 1.05 : 1 }}
-        transition={{ duration: 0.3 }}
-        className="relative overflow-hidden rounded-2xl bg-gray-800"
-      >
+      <div className="relative overflow-hidden rounded-xl bg-gray-800 shadow-2xl h-full">
         {/* Movie Poster */}
         <img
           src={imageUrl}
           alt={movie.title}
-          className="w-full h-80 object-cover transition-all duration-500"
+          className="w-full h-64 object-cover transition-all duration-500 group-hover:brightness-50"
+          loading="lazy" // Lazy loading for better performance
         />
 
         {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
         {/* Movie Info */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-0 group-hover:translate-y-0 transition-transform duration-300">
-          <h3 className="font-bold text-lg mb-2 line-clamp-2">{movie.title}</h3>
+        <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+          <h3 className="font-bold text-sm mb-2 line-clamp-2 group-hover:text-purple-200 transition-colors">
+            {movie.title}
+          </h3>
 
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center justify-between">
             <span
-              className={`font-semibold ${getRatingColor(movie.vote_average)}`}
+              className={`font-semibold text-xs ${getRatingColor(
+                movie.vote_average
+              )}`}
             >
               ⭐ {movie.vote_average.toFixed(1)}
             </span>
-            <span className="text-sm text-gray-300">
+            <span className="text-xs text-gray-300">
               {new Date(movie.release_date).getFullYear()}
             </span>
           </div>
 
-          {/* Description on Hover */}
+          {/* Hover Actions */}
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{
-              opacity: isHovered ? 1 : 0,
-              height: isHovered ? "auto" : 0,
-            }}
-            className="overflow-hidden"
+            initial={{ opacity: 0, y: 10 }}
+            whileHover={{ opacity: 1, y: 0 }}
+            className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
           >
-            <p className="text-sm text-gray-300 line-clamp-3 mt-2">
-              {movie.overview}
-            </p>
-
-            {/* Action Buttons */}
-            <div className="flex gap-2 mt-3">
-              <button className="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-2 px-3 rounded-lg text-sm font-semibold transition-colors">
-                Watch Now
-              </button>
-              <button className="bg-gray-700 hover:bg-gray-600 text-white p-2 rounded-lg transition-colors">
-                ❤️
-              </button>
-            </div>
+            <button className="bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-lg font-semibold hover:bg-white/30 transition-all">
+              View Details
+            </button>
           </motion.div>
         </div>
-      </motion.div>
+      </div>
     </motion.div>
   );
 }

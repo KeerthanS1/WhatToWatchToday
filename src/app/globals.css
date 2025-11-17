@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-/* app/globals.css */
 @tailwind utilities;
 
 @layer base {
